@@ -1,0 +1,2 @@
+numpy versions conflict between collab and bert
+some Bert backend servers do not work on ARM architecture
