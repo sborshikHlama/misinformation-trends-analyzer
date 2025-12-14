@@ -1,11 +1,11 @@
-fastapi
+streamlit
 uvicorn[standard]
 bertopic
 sentence-transformers
 transformers
 torch==2.4.1
 scikit-learn==1.5.2
-scipy==1.14.1
+scipy==1.16.3
 joblib==1.4.2
 tqdm==4.66.5
 pandas==2.2.3
@@ -13,7 +13,7 @@ plotly==5.24.1
 pydantic==2.9.2
 
 # Важно: фиксируем numpy 2.x (как в текущем Colab)
-numpy>=2.0,<2.3
+numpy==2.0.2
 
 # Убираем umap-learn и hdbscan — они опциональны для BERTopic
 # BERTopic может работать без них (использует другие бэкенды)
