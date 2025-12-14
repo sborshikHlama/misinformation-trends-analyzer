@@ -1,93 +1,226 @@
-# misinformation-trends-analyzer
+# 📰 Fake News Style Detector
 
+A Streamlit web application that uses BERTopic to analyze news text and detect if it's written in a fake news style. The model identifies topics and provides probability scores based on training data from 21,000 fake news articles (2016-2018).
 
+## 🚀 Features
 
-## Getting started
+- **Topic Detection**: Identifies which topic cluster the news text belongs to
+- **Probability Scoring**: Shows confidence level of the classification
+- **Keyword Extraction**: Displays top 10 keywords associated with detected topics
+- **User-Friendly Interface**: Simple text input with instant analysis
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 📋 Prerequisites
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- Python 3.12+
+- Docker (optional, for containerized deployment)
 
-## Add your files
+## 🛠️ Installation
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+### Option 1: Local Installation
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/yourusername/fake-news-detector.git
+cd fake-news-detector
+```
+
+2. **Create virtual environment**
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. **Install dependencies**
+
+```bash
+pip install -r requirements.txt
+```
+
+4. **Run the application**
+
+```bash
+streamlit run app.py
+```
+
+5. **Open in browser**
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/evsa04/misinformation-trends-analyzer.git
-git branch -M main
-git push -uf origin main
+http://localhost:8501
 ```
 
-## Integrate with your tools
+### Option 2: Docker Installation
 
-- [ ] [Set up project integrations](https://gitlab.com/evsa04/misinformation-trends-analyzer/-/settings/integrations)
+1. **Build the Docker image**
 
-## Collaborate with your team
+```bash
+docker build --platform linux/amd64 -t fake-news-detector:latest .
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+2. **Run the container**
 
-## Test and Deploy
+```bash
+docker run -p 8501:8501 fake-news-detector:latest
+```
 
-Use the built-in continuous integration in GitLab.
+3. **Open in browser**
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```
+http://localhost:8501
+```
 
-***
+### Option 3: Docker Compose
 
-# Editing this README
+1. **Start the application**
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```bash
+docker-compose up -d
+```
 
-## Suggestions for a good README
+2. **Stop the application**
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```bash
+docker-compose down
+```
 
-## Name
-Choose a self-explaining name for your project.
+## 📦 Requirements
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```
+streamlit
+uvicorn[standard]
+bertopic
+sentence-transformers
+transformers
+torch==2.4.1
+scikit-learn==1.5.2
+scipy==1.11.4
+joblib==1.4.2
+tqdm==4.66.5
+pandas==2.2.3
+plotly==5.24.1
+pydantic==2.9.2
+numpy>=2.0,<2.3
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+## 🎯 Usage
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+1. Open the application in your browser
+2. Enter news text in the text area
+3. Click "Analyze" button
+4. View results:
+   - **Topic #**: Assigned topic cluster number
+   - **Probability**: Confidence score of the classification
+   - **Keywords**: Top 10 relevant keywords for the topic
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### Example Input
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+```
+Trump just said something shocking about Obama!
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## 🏗️ Project Structure
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+```
+fake-news-detector/
+├── app.py                 # Main Streamlit application
+├── requirements.txt       # Python dependencies
+├── Dockerfile            # Docker configuration
+├── docker-compose.yml    # Docker Compose configuration
+└── README.md            # Project documentation
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+## 🔧 Configuration
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+The application uses a pre-trained BERTopic model hosted on Hugging Face:
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+- Model: `evstiars/bertopic-fake-news-detector`
+- Training data: 21,000 fake news articles from 2016-2018
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## 🐛 Troubleshooting
 
-## License
-For open source projects, say how it is licensed.
+### scipy.sparse.diags Error
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+If you encounter `ValueError: Different number of diagonals and offsets`, the application includes a monkey patch that automatically fixes this compatibility issue between different scipy versions.
+
+### Model Loading Issues
+
+- Ensure you have a stable internet connection for downloading the model from Hugging Face
+- The first run may take longer as the model is downloaded and cached
+
+### Memory Issues
+
+The model requires significant memory. Recommended minimum:
+
+- RAM: 4GB+
+- Disk space: 2GB+ for model cache
+
+## 🌐 Deployment
+
+### Deploy on Streamlit Cloud
+
+1. Push your code to GitHub
+2. Go to [share.streamlit.io](https://share.streamlit.io)
+3. Connect your repository
+4. Deploy!
+
+### Deploy on Heroku
+
+```bash
+heroku create your-app-name
+git push heroku main
+heroku open
+```
+
+### Deploy with Docker on Cloud Platforms
+
+The Docker image is compatible with:
+
+- AWS ECS/Fargate
+- Google Cloud Run
+- Azure Container Instances
+- DigitalOcean App Platform
+
+Example for Google Cloud Run:
+
+```bash
+# Build for linux/amd64
+docker build --platform linux/amd64 -t gcr.io/PROJECT_ID/fake-news-detector .
+
+# Push to Google Container Registry
+docker push gcr.io/PROJECT_ID/fake-news-detector
+
+# Deploy to Cloud Run
+gcloud run deploy fake-news-detector \
+  --image gcr.io/PROJECT_ID/fake-news-detector \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
+```
+
+## 📊 Model Information
+
+- **Model Type**: BERTopic (Bidirectional Encoder Representations from Transformers for Topic Modeling)
+- **Training Dataset**: 21,000 fake news articles (2016-2018)
+- **Embedding Model**: Sentence Transformers
+- **Clustering**: HDBSCAN with UMAP dimensionality reduction
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- BERTopic library by Maarten Grootendorst
+- Hugging Face for model hosting
+- Streamlit for the web framework
