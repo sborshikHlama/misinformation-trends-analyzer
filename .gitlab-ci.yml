@@ -1,0 +1,38 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  only:
+    - main
+
+test:
+  stage: test
+  image: python:3.12-slim
+  script:
+    - apt-get update && apt-get install -y build-essential
+    - pip install -r requirements.txt
+    - python -c "import app; print('App imports successfully')"
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploy to staging environment"
+    # Add deployment commands here, e.g., kubectl, ansible, etc.
+  only:
+    - main
+  when: manual
