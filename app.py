@@ -7,9 +7,10 @@ import torch
 # Header
 st.title("📰 Fake News Style Detector")
 st.markdown(
-    "Enter news text — the model will tell you if it's written in a fake "
-    "news style and what topic it belongs to"
+    "Enter news text — the model will tell you if it's written in a "
+    "fake news style and what topic it belongs to"
 )
+
 
 # ========== MONKEY PATCH for scipy.sparse.diags ==========
 # Save original function
@@ -88,10 +89,8 @@ if st.button("Analyze"):
             else:
                 topic_name = f"Topic {topic_id}"
                 try:
-                    keywords = [
-                        word
-                        for word, _ in topic_model.get_topic(topic_id)[:10]
-                    ]
+                    topic = topic_model.get_topic(topic_id)
+                    keywords = [word for word, _ in topic[:10]]
                 except Exception:
                     keywords = []
 

@@ -25,6 +25,8 @@ test:
     - apt-get update && apt-get install -y build-essential
     - pip install -r requirements.txt
     - python -c "import app; print('App imports successfully')"
+    - flake8 app.py --max-line-length=100 --extend-ignore=E203,W503
+    - black --check app.py
   only:
     - main
 
