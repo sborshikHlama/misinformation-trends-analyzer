@@ -1,9 +1,11 @@
 streamlit
+fastapi
 uvicorn[standard]
 bertopic
 sentence-transformers
 transformers
-torch==2.4.1
+torch
+httpx
 scikit-learn==1.5.2
 scipy==1.16.3
 joblib==1.4.2
@@ -15,5 +17,6 @@ pytest
 flake8
 black
 
-numpy==2.0.2
 
+numpy==2.0.2
+requests
