@@ -6,15 +6,28 @@ stages:
 variables:
   DOCKER_DRIVER: overlay2
 
-build:
+build-backend:
   stage: build
   image: docker:latest
   services:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker build -f Dockerfile.backend -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_SLUG .
+    - docker push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_SLUG
+  only:
+    - main
+    - merge_requests
+
+build-frontend:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f Dockerfile.frontend -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_SLUG .
+    - docker push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_SLUG
   only:
     - main
     - merge_requests
@@ -25,9 +38,8 @@ test:
   script:
     - apt-get update && apt-get install -y build-essential
     - pip install -r requirements.txt
-    - python -c "import app; print('App imports successfully')"
-    - flake8 app.py --max-line-length=100 --extend-ignore=E203,W503
-    - black --check app.py
+    - flake8 src/backend/ src/frontend/ --max-line-length=100 --extend-ignore=E203,W503
+    - black --check src/backend/ src/frontend/
     - pytest tests/ --tb=short
   only:
     - main
