@@ -21,12 +21,8 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # load models on startup
-    bertopic_path = Path(
-        os.getenv("BERTOPIC_MODEL_PATH", "./bert_fake_true")
-    )
-    logreg_path = Path(
-        os.getenv("LOGREG_MODEL_PATH", "./log_reg_fake_true")
-    )
+    bertopic_path = Path(os.getenv("BERTOPIC_MODEL_PATH", "./bert_fake_true"))
+    logreg_path = Path(os.getenv("LOGREG_MODEL_PATH", "./log_reg_fake_true"))
     try:
         model_service.load_models(bertopic_path=bertopic_path, logreg_path=logreg_path)
     except Exception as e:
