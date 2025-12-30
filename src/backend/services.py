@@ -1,8 +1,8 @@
-import os
 import json
-import pickle
 import logging
-from typing import Dict, Any, Optional
+import pickle
+from pathlib import Path
+from typing import Any, Dict, Optional, Union
 
 import numpy as np
 import scipy.sparse as sp
@@ -52,33 +52,38 @@ class ModelService:
 
     def load_models(
         self,
-        bertopic_path: str = "bert_fake_true",
-        logreg_path: str = "log_reg_fake_true",
+        bertopic_path: Union[str, Path] = "bert_fake_true",
+        logreg_path: Union[str, Path] = "log_reg_fake_true",
     ) -> None:
         # load all models from specified paths.
+        bertopic_path = Path(bertopic_path)
+        logreg_path = Path(logreg_path)
+
         logger.info(f"Loading BERTopic model from {bertopic_path}...")
-        self.bertopic_model = BERTopic.load(bertopic_path)
+        self.bertopic_model = BERTopic.load(str(bertopic_path))
         logger.info("BERTopic model loaded!")
 
         logger.info(f"Loading LogReg model from {logreg_path}...")
-        with open(os.path.join(logreg_path, "vectorizer.pkl"), "rb") as f:
+        vectorizer_path = logreg_path / "vectorizer.pkl"
+        classifier_path = logreg_path / "classifier.pkl"
+        with open(vectorizer_path, "rb") as f:
             self.vectorizer = pickle.load(f)
-        with open(os.path.join(logreg_path, "classifier.pkl"), "rb") as f:
+        with open(classifier_path, "rb") as f:
             self.classifier = pickle.load(f)
         logger.info("LogReg model loaded!")
 
         self._load_topic_mapping(bertopic_path)
         self._models_loaded = True
 
-    def _load_topic_mapping(self, bertopic_path: str) -> None:
-        # lad topic name mapping from JSON file
+    def _load_topic_mapping(self, bertopic_path: Path) -> None:
+        # load topic name mapping from JSON file
         mapping_files = [
-            "topic_mapping.json",
-            "/models/topic_mapping.json",
-            os.path.join(bertopic_path, "topic_mapping.json"),
+            Path("topic_mapping.json"),
+            Path("/models/topic_mapping.json"),
+            bertopic_path / "topic_mapping.json",
         ]
         for mapping_file in mapping_files:
-            if os.path.exists(mapping_file):
+            if mapping_file.exists():
                 with open(mapping_file, "r", encoding="utf-8") as f:
                     raw = json.load(f)
                     self.topic_mapping = {int(k): v for k, v in raw.items()}

@@ -8,7 +8,15 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 *.egg-info/
 dist/
 build/
 .grok/
+mlruns/
+mlflow/
+mlflow_artifacts/
+mlflow.db
+mlflow_data/
+data/*.csv
+tmp/

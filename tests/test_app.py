@@ -1,6 +1,7 @@
 import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src', 'backend')))
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "src" / "backend"))
 
 import pytest
 from unittest.mock import patch, MagicMock, mock_open
@@ -35,7 +36,7 @@ class TestModelService:
     @patch('services.BERTopic.load')
     @patch('builtins.open', new_callable=mock_open)
     @patch('pickle.load')
-    @patch('os.path.exists')
+    @patch('services.Path.exists')
     def test_load_models_success(self, mock_exists, mock_pickle, mock_file, mock_bertopic):
         mock_exists.return_value = False  # No topic mapping file
         mock_bertopic.return_value = MagicMock()
@@ -58,9 +59,9 @@ class TestModelService:
     @patch('services.BERTopic.load')
     @patch('builtins.open', new_callable=mock_open)
     @patch('pickle.load')
-    @patch('os.path.exists')
+    @patch('services.Path.exists')
     def test_load_topic_mapping(self, mock_exists, mock_pickle, mock_file, mock_bertopic):
-        mock_exists.side_effect = lambda path: path == "topic_mapping.json"
+        mock_exists.side_effect = lambda: True  # First call returns True
         mock_file.return_value.read.return_value = '{"0": "Test Topic"}'
         mock_bertopic.return_value = MagicMock()
         mock_pickle.side_effect = [MagicMock(), MagicMock()]
@@ -72,7 +73,7 @@ class TestModelService:
     @patch('services.BERTopic.load')
     @patch('builtins.open', new_callable=mock_open)
     @patch('pickle.load')
-    @patch('os.path.exists')
+    @patch('services.Path.exists')
     def test_analyze_text_success(self, mock_exists, mock_pickle, mock_file, mock_bertopic):
         # Mock models
         mock_bertopic_model = MagicMock()
@@ -105,7 +106,7 @@ class TestModelService:
     @patch('services.BERTopic.load')
     @patch('builtins.open', new_callable=mock_open)
     @patch('pickle.load')
-    @patch('os.path.exists')
+    @patch('services.Path.exists')
     def test_analyze_text_long_preview(self, mock_exists, mock_pickle, mock_file, mock_bertopic):
         mock_bertopic_model = MagicMock()
         mock_bertopic_model.transform.return_value = ([0], [[0.8]])
@@ -127,9 +128,9 @@ class TestModelService:
     @patch('services.BERTopic.load')
     @patch('builtins.open', new_callable=mock_open)
     @patch('pickle.load')
-    @patch('os.path.exists')
+    @patch('services.Path.exists')
     def test_get_topic_mapping(self, mock_exists, mock_pickle, mock_file, mock_bertopic):
-        mock_exists.side_effect = lambda path: path == "topic_mapping.json"
+        mock_exists.side_effect = lambda: True  # First call returns True
         mock_file.return_value.read.return_value = '{"1": "Politics", "2": "Sports"}'
         mock_bertopic.return_value = MagicMock()
         mock_pickle.side_effect = [MagicMock(), MagicMock()]
@@ -152,7 +153,7 @@ class TestModelService:
     @patch('services.BERTopic.load')
     @patch('builtins.open', new_callable=mock_open)
     @patch('pickle.load')
-    @patch('os.path.exists')
+    @patch('services.Path.exists')
     def test_load_models_pickle_failure(self, mock_exists, mock_pickle, mock_file, mock_bertopic):
         mock_bertopic.return_value = MagicMock()
         mock_pickle.side_effect = Exception("Pickle load failed")

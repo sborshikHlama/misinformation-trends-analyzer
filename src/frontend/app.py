@@ -10,7 +10,7 @@ API_URL = os.getenv("API_URL", "http://localhost:8000")
 st.set_page_config(page_title="Fake News Detector", page_icon="📰", layout="wide")
 st.title("📰 Fake News Style Detector")
 st.markdown(
-    "Enter news text — the model will tell you if it's written in a "
+    "Enter news text - the model will tell you if it's written in a "
     "fake news style and what topic it belongs to"
 )
 

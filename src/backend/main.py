@@ -1,5 +1,7 @@
+import logging
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,20 +14,23 @@ from models import (
 )
 from services import model_service
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # load models on startup
-    bertopic_path = os.getenv(
-        "BERTOPIC_MODEL_PATH", "../../log_reg_fake_true/bert_fake_true"
+    bertopic_path = Path(
+        os.getenv("BERTOPIC_MODEL_PATH", "./bert_fake_true")
     )
-    logreg_path = os.getenv(
-        "LOGREG_MODEL_PATH", "../../log_reg_fake_true/log_reg_fake_true"
+    logreg_path = Path(
+        os.getenv("LOGREG_MODEL_PATH", "./log_reg_fake_true")
     )
     try:
         model_service.load_models(bertopic_path=bertopic_path, logreg_path=logreg_path)
     except Exception as e:
-        print(f"Warning: Failed to load models: {e}")
+        logger.warning(f"Failed to load models: {e}")
     yield
 
 
