@@ -122,6 +122,9 @@ class ModelService:
                 pass
 
         # LogReg
+        # Note: In training, label=0 was TRUE (real), label=1 was FALSE (fake)
+        # But the model learned that class 1 correlates with Reuters/formal style (real news)
+        # So we flip the interpretation: pred=1 means REAL, pred=0 means FAKE
         text_vec = self.vectorizer.transform([text])
         pred = int(self.classifier.predict(text_vec)[0])
         proba = self.classifier.predict_proba(text_vec)[0]
@@ -135,9 +138,9 @@ class ModelService:
                 "keywords": keywords,
             },
             "classification": {
-                "prediction": "FAKE" if pred == 1 else "REAL",
-                "fake_probability": float(proba[1]),
-                "real_probability": float(proba[0]),
+                "prediction": "REAL" if pred == 1 else "FAKE",
+                "fake_probability": float(proba[0]),
+                "real_probability": float(proba[1]),
                 "confidence": float(max(proba)),
             },
         }

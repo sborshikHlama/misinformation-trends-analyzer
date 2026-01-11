@@ -84,8 +84,8 @@ class TestModelService:
         mock_vectorizer = MagicMock()
         mock_vectorizer.transform.return_value = MagicMock()
         mock_classifier = MagicMock()
-        mock_classifier.predict.return_value = [1]  # FAKE
-        mock_classifier.predict_proba.return_value = [[0.3, 0.7]]  # fake_prob=0.7
+        mock_classifier.predict.return_value = [1]  # pred=1 means REAL in our model
+        mock_classifier.predict_proba.return_value = [[0.3, 0.7]]  # proba[0]=fake, proba[1]=real
 
         mock_pickle.side_effect = [mock_vectorizer, mock_classifier]
         mock_exists.return_value = False
@@ -98,9 +98,9 @@ class TestModelService:
         assert result["topic"]["topic_name"] == "Topic 0"
         assert result["topic"]["confidence"] == 0.8
         assert result["topic"]["keywords"] == ["word1", "word2"]
-        assert result["classification"]["prediction"] == "FAKE"
-        assert result["classification"]["fake_probability"] == 0.7
-        assert result["classification"]["real_probability"] == 0.3
+        assert result["classification"]["prediction"] == "REAL"  # pred=1 means REAL
+        assert result["classification"]["fake_probability"] == 0.3  # proba[0]
+        assert result["classification"]["real_probability"] == 0.7  # proba[1]
         assert result["classification"]["confidence"] == 0.7
 
     @patch('services.BERTopic.load')
