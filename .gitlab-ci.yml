@@ -47,9 +47,12 @@ test:
 
 deploy:
   stage: deploy
+  image: bitnami/kubectl:latest
   script:
-    - echo "Deploy to staging environment"
-    # Add deployment commands here, e.g., kubectl, ansible, etc.
+    - sed -i "s|\${BACKEND_IMAGE}|$CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_SLUG|g" k8s/backend.yaml
+    - sed -i "s|\${FRONTEND_IMAGE}|$CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_SLUG|g" k8s/frontend.yaml
+    - kubectl apply -f k8s/backend.yaml
+    - kubectl apply -f k8s/frontend.yaml
   only:
     - main
   when: manual
