@@ -20,3 +20,4 @@ black
 
 numpy==2.0.2
 requests
+mlflow

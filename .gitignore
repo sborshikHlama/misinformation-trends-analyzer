@@ -20,3 +20,7 @@ mlflow.db
 mlflow_data/
 data/*.csv
 tmp/
+.DS_Store
+.claude/
+.pytest_cache/
+bertopic_news_detector/
